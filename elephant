@@ -1,0 +1,33 @@
+select race_id, driver_id, sum from (
+select race_id, driver_id, sum(race_points) as sum 
+from race_data 
+where race_id = 959 or race_id = 960 or race_id = 958
+group by driver_id, race_id 
+order by race_id desc, driver_id asc) as mytable
+where sum is not null;
+
+select driver_id, year, sum(race_points)
+from race join race_data on race.id = race_data.race_id
+where year = 2019
+group by year, driver_id
+order by sum(race_points) desc;
+
+select 2010, sum(points)
+from (select year, count(race_id) as points from race_data join race on race.id = race_data.race_id where year < 2020 and year > 2009 group by year) as mtable;
+
+
+select full_name, year, race_time, race_time_millis 
+from race_data join race on race.id = race_data.race_id 
+join driver on driver.id = race_data.driver_id and year > 2019
+where type = 'RACE_RESULT' and race_time is not null
+order by race_time_millis asc;
+
+select nspname, typname
+from pg_type t
+join pg_namespace n
+on n.oid = t.typnamespace
+where nspname = 'pg_catalog'
+and typname !~ '(^_|^pg_|^reg|_handler$)'
+order by nspname, typname;
+
+
